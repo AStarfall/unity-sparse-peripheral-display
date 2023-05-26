@@ -12,56 +12,49 @@ public class ArduinoConnector : MonoBehaviour
 
     void Start()
     {
-        // Starte die serielle Verbindung auf dem COM-Port 5
+        // Start serial connection
         serialPort.DtrEnable = true;
         serialPort.RtsEnable = true;
         serialPort.Open();
 
-        // Array für die Farben der LEDs
+        // Array for the colours of the LEDs
         ledColors = new Color[ledCount];
     }
 
     // Update is called once per frame
     void Update()
     {
-        // // zufällige Farben für die LEDs
-        // for (int i = 0; i < ledCount; i++)
-        // {
-        //     ledColors[i] = new Color(Random.value, Random.value, Random.value);
-        // }
-
         ledColors[0] = new Color(1, 0, 0); // Rot
         ledColors[1] = new Color(0, 1, 0); // Grün
 
-        // Sende die Farben an den Arduino im binären Format
+
         byte[] data = new byte[ledCount * 3];
         for (int i = 0; i < ledCount; i++)
         {
-            // Konvertiere den Farbwert in den RGB-Bereich von 0-255
+            // Convert the colour value to the RGB range 0-255
             int r = Mathf.RoundToInt(ledColors[i].r * 255);
             int g = Mathf.RoundToInt(ledColors[i].g * 255);
             int b = Mathf.RoundToInt(ledColors[i].b * 255);
 
-            // Speichere die RGB-Werte im Datenarray
+            // Store the RGB values in the data array
             data[i * 3] = (byte)r;
             data[i * 3 + 1] = (byte)g;
             data[i * 3 + 2] = (byte)b;
         }
 
-        // Sende die Daten an den Arduino
+        // Send data to Arduino
         serialPort.Write(data, 0, data.Length);
-
 
         if (serialPort.IsOpen)
         {
             Debug.Log("Serial Port is open");
-            Debug.Log("Sent data to Arduino");
+            Debug.Log("Data sent to Arduino");
         }
     }
 
     void OnApplicationQuit()
     {
-        // Schließe die serielle Verbindung
+        // Close serial connection
         serialPort.Close();
     }
 }
