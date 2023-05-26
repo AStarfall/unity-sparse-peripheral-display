@@ -6,7 +6,10 @@ using System.IO.Ports;
 
 public class ArduinoConnector : MonoBehaviour
 {
-    SerialPort serialPort = new SerialPort("COM5", 250000);
+    // SerialPort serialPort = new SerialPort("COM5", 250000);  /not working properly -> flickering
+    // SerialPort serialPort = new SerialPort("COM5", 19200);
+    SerialPort serialPort = new SerialPort("COM5", 23000);  //working
+
     public Color[] ledColors;
     public int ledCount = 2;
 
@@ -15,6 +18,7 @@ public class ArduinoConnector : MonoBehaviour
         // Start serial connection
         serialPort.DtrEnable = true;
         serialPort.RtsEnable = true;
+        serialPort.WriteBufferSize = ledCount * 3;
         serialPort.Open();
 
         // Array for the colours of the LEDs
@@ -42,7 +46,7 @@ public class ArduinoConnector : MonoBehaviour
             data[i * 3 + 2] = (byte)b;
         }
 
-        // Send data to Arduino
+        // Send data to Arduino if 2.5ms passed since last time
         serialPort.Write(data, 0, data.Length);
 
         if (serialPort.IsOpen)
