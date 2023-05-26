@@ -15,10 +15,12 @@ public class ArduinoConnector : MonoBehaviour
 
     void Start()
     {
-        // Start serial connection
+        // Setup serial connection
         serialPort.DtrEnable = true;    // necessary for my Arduino Nano every
         serialPort.RtsEnable = true;    // necessary for my Arduino Nano every
         serialPort.WriteBufferSize = ledCount * 3; // set the buffer size to the number of LEDs * 3, Don't know if this is necessary
+
+        // Open serial connection
         serialPort.Open();
 
         // Array for the colours of the LEDs
