@@ -24,8 +24,8 @@ public class ArduinoConnector : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        ledColors[0] = new Color(1, 0, 0); // Rot
-        ledColors[1] = new Color(0, 1, 0); // Grün
+        ledColors[0] = new Color(1, 0, 0); // red
+        ledColors[1] = new Color(0, 1, 0); // green
 
 
         byte[] data = new byte[ledCount * 3];
