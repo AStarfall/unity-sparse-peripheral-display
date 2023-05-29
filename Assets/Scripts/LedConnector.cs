@@ -4,18 +4,21 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using System.IO.Ports;
 
-public class ArduinoConnector : MonoBehaviour
+public class LedConnector : MonoBehaviour
 {
-    SerialPort serialPort = new SerialPort("COM5", 250000); //only works with coroutine
-    // SerialPort serialPort = new SerialPort("COM5", 19200);   //working
-    // SerialPort serialPort = new SerialPort("COM5", 23000);   //working
-
-    public Color[] ledColors; // array for the colours of the LEDs
+    // Public variables
+    public string portName = "COM5"; // name of the serial port
+    public int baudRate = 250000; // baud rate of the serial connection
     public int ledCount = 2; // number of LEDs connected to Arduino
+
+    // Private variables
+    private SerialPort serialPort;
+    private Color[] ledColors; // array for the colours of the LEDs
 
     void Start()
     {
         // Setup serial connection
+        serialPort = new SerialPort(portName, baudRate);
         serialPort.DtrEnable = true;    // necessary for my Arduino Nano every
         serialPort.RtsEnable = true;    // necessary for my Arduino Nano every
         serialPort.WriteBufferSize = ledCount * 3; // set the buffer size to the number of LEDs * 3, Don't know if this is necessary
