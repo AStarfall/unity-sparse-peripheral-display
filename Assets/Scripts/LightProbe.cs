@@ -29,4 +29,10 @@ public class LightProbe : MonoBehaviour
     {
         return transform.position;
     }
+
+    public Vector3 GetProbeScreenPosition(Camera camera)
+    {
+        // return ProbePostion in relation to the camera
+        return camera.WorldToScreenPoint(transform.position);
+    }
 }
