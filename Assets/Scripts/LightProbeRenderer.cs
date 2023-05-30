@@ -19,28 +19,6 @@ public class LightProbeRenderer : MonoBehaviour
         CalculateVoronoiDiagram();
     }
 
-    // void CalculateVoronoiDiagram()
-    // {
-    //     // Rendere das Bild der MainCamera in die Textur
-    //     RenderTexture currentRT = RenderTexture.active;
-    //     RenderTexture.active = mainCamera.targetTexture;
-    //     mainCamera.Render();
-    //     cameraTexture.ReadPixels(new Rect(0, 0, cameraTexture.width, cameraTexture.height), 0, 0);
-    //     cameraTexture.Apply();
-    //     RenderTexture.active = currentRT;
-
-    //     // Erstelle das Voronoi-Diagramm
-    //     for (int i = 0; i < cameraTexture.width; i++)
-    //     {
-    //         for (int j = 0; j < cameraTexture.height; j++)
-    //         {
-    //             Vector2 pixelPosition = new Vector2(i, j);
-    //             int nearestProbeIndex = FindNearestProbeIndex(pixelPosition);
-    //             lightProbes[nearestProbeIndex].UpdateProbeColor(cameraTexture.GetPixel(i, j));
-    //         }
-    //     }
-    // }
-
     void CalculateVoronoiDiagram()
     {
         // Rendere das Bild der MainCamera in die Textur
