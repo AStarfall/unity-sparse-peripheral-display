@@ -7,7 +7,9 @@ public class LightProbeRenderer : MonoBehaviour
     public LightProbe[] lightProbes; // Array der Light Probes
 
     public Camera mainCamera; // Referenz auf die MainCamera
-    public Texture2D cameraTexture; // Textur, um das gerenderte Bild der MainCamera zu speichern
+    private Texture2D cameraTexture; // Textur, um das gerenderte Bild der MainCamera zu speichern
+
+    // private WaitForEndOfFrame waitForEndOfFrame = new WaitForEndOfFrame();
 
     void Start()
     {
@@ -16,21 +18,31 @@ public class LightProbeRenderer : MonoBehaviour
     }
     void Update()
     {
+        // Berechne das Voronoi-Diagramm
         CalculateVoronoiDiagram();
     }
 
     void CalculateVoronoiDiagram()
     {
-        // Rendere das Bild der MainCamera in die Textur
+        StartCoroutine(CaptureFrameAndCalculateVoronoi());
+    }
+
+    IEnumerator CaptureFrameAndCalculateVoronoi()
+    {
+        // Warte bis zum Ende des Rendering-Frames
+        yield return new WaitForEndOfFrame();
+
+        // Erhalte das gerenderte Bild der MainCamera
         RenderTexture currentRT = RenderTexture.active;
         RenderTexture.active = mainCamera.targetTexture;
-        mainCamera.Render();
         cameraTexture.ReadPixels(new Rect(0, 0, cameraTexture.width, cameraTexture.height), 0, 0);
         cameraTexture.Apply();
         RenderTexture.active = currentRT;
 
-        // Erstelle das Voronoi-Diagramm
+        // Erstelle das Voronoi-Diagramm und berechne Durchschnittsfarbwerte
         int[] nearestProbeIndices = new int[cameraTexture.width * cameraTexture.height];
+        Color[] averageColors = new Color[lightProbes.Length];
+        int[] probeCounts = new int[lightProbes.Length];
 
         for (int i = 0; i < cameraTexture.width; i++)
         {
@@ -40,10 +52,6 @@ public class LightProbeRenderer : MonoBehaviour
                 nearestProbeIndices[j * cameraTexture.width + i] = FindNearestProbeIndex(pixelPosition);
             }
         }
-
-        // Berechne Durchschnittsfarbwerte für jede Light Probe
-        Color[] averageColors = new Color[lightProbes.Length];
-        int[] probeCounts = new int[lightProbes.Length];
 
         for (int i = 0; i < cameraTexture.width; i++)
         {
@@ -67,6 +75,7 @@ public class LightProbeRenderer : MonoBehaviour
         }
     }
 
+
     int FindNearestProbeIndex(Vector2 position)
     {
         int nearestIndex = 0;
@@ -75,6 +84,7 @@ public class LightProbeRenderer : MonoBehaviour
         for (int i = 0; i < lightProbes.Length; i++)
         {
             float distance = Vector2.Distance(position, mainCamera.WorldToScreenPoint(lightProbes[i].GetProbePosition()));
+            // float distance = Vector2.Distance(position, lightProbes[i].GetProbePosition());
             if (distance < nearestDistance)
             {
                 nearestIndex = i;
