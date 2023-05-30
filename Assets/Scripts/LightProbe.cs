@@ -6,21 +6,27 @@ public class LightProbe : MonoBehaviour
 {
     public int probeIndex; // Index der Light Probe (entspricht der LED-Nummer)
 
-    private Color probeColor; // Aktueller Farbwert der Light Probe
+    public Color probeColor { protected set; get; } // Aktueller Farbwert der Light Probe
+
+    void Start()
+    {
+
+    }
 
     public void UpdateProbeColor(Color color)
     {
         probeColor = color;
 
-        // get Sphere in the Light Probe
+        // Hole die Sphere des Light Probe
         GameObject sphere = transform.GetChild(0).gameObject;
 
-        // set the color of the sphere
+        // Setze die Farbe der Sphere
         sphere.GetComponent<Renderer>().material.color = probeColor;
     }
 
-    public Color GetProbeColor()
+
+    public Vector3 GetProbePosition()
     {
-        return probeColor;
+        return transform.position;
     }
 }
