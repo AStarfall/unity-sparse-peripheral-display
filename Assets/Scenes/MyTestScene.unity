@@ -601,6 +601,11 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!20 &1316821660 stripped
+Camera:
+  m_CorrespondingSourceObject: {fileID: 2083460, guid: dc06161b6d97feb419f45f03b62e14b9, type: 3}
+  m_PrefabInstance: {fileID: 623871757}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1331002411
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -829,6 +834,8 @@ MonoBehaviour:
   lightProbes:
   - {fileID: 1331002413}
   - {fileID: 1614796654}
+  mainCamera: {fileID: 1316821660}
+  cameraTexture: {fileID: 0}
 --- !u!124 &1567752064
 Behaviour:
   m_ObjectHideFlags: 0
