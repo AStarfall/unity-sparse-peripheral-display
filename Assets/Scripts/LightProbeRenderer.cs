@@ -96,7 +96,7 @@ public class LightProbeRenderer : MonoBehaviour
 
         for (int i = 0; i < lightProbes.Length; i++)
         {
-            float distance = Vector2.Distance(position, lightProbes[i].GetProbeScreenPosition(mainCamera));
+            float distance = Vector2.Distance(position, mainCamera.WorldToScreenPoint(lightProbes[i].GetProbePosition()));
             if (distance < nearestDistance)
             {
                 nearestIndex = i;
