@@ -285,7 +285,7 @@ MonoBehaviour:
   lightProbes:
   - {fileID: 1331002413}
   - {fileID: 1614796654}
-  mainCamera: {fileID: 382510204}
+  renderCamera: {fileID: 382510204}
 --- !u!20 &382510204
 Camera:
   m_ObjectHideFlags: 0
