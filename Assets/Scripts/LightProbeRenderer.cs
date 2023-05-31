@@ -78,18 +78,19 @@ public class LightProbeRenderer : MonoBehaviour
         Color[] averageColors = new Color[lightProbes.Length];
         int[] probeCounts = new int[lightProbes.Length];
 
-        for (int i = 0; i < cameraTexture.width; i++)
-        {
-            for (int j = 0; j < cameraTexture.height; j++)
-            {
-                int pixelIndex = j * cameraTexture.width + i;
-                int nearestProbeIndex = nearestProbeIndices[pixelIndex];
+        // Erhalte die Pixelwerte der Kameratextur
+        Color[] pixels = cameraTexture.GetPixels();
 
-                averageColors[nearestProbeIndex] += cameraTexture.GetPixel(i, j);
-                probeCounts[nearestProbeIndex]++;
-            }
+        // Iteriere über die Pixel und aktualisiere die Durchschnittsfarbwerte
+        for (int i = 0; i < pixels.Length; i++)
+        {
+            int nearestProbeIndex = nearestProbeIndices[i];
+
+            averageColors[nearestProbeIndex] += pixels[i];
+            probeCounts[nearestProbeIndex]++;
         }
 
+        // Aktualisiere die Light Probes mit den Durchschnittsfarbwerten
         for (int i = 0; i < lightProbes.Length; i++)
         {
             if (probeCounts[i] > 0)
@@ -99,6 +100,7 @@ public class LightProbeRenderer : MonoBehaviour
             }
         }
     }
+
 
     int FindNearestProbeIndex(Vector2 position)
     {
