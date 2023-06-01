@@ -1331,7 +1331,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1704685460
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1347,6 +1347,7 @@ MonoBehaviour:
   portName: COM5
   baudRate: 250000
   ledCount: 2
+  lightProbeParent: {fileID: 1723889000}
 --- !u!4 &1704685461
 Transform:
   m_ObjectHideFlags: 0

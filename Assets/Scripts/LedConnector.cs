@@ -11,9 +11,13 @@ public class LedConnector : MonoBehaviour
     public int baudRate = 250000; // baud rate of the serial connection
     public int ledCount = 2; // number of LEDs connected to Arduino
 
+    public GameObject lightProbeParent; // Referenz auf das GameObject, das alle Light Probes enthält
+
+
     // Private variables
     private SerialPort serialPort;
-    private Color[] ledColors; // array for the colours of the LEDs
+    // private Color[] ledColors; // array for the colours of the LEDs
+    private LightProbe[] lightProbes; // Array der Light Probes
 
     void Start()
     {
@@ -26,11 +30,8 @@ public class LedConnector : MonoBehaviour
         // Open serial connection
         serialPort.Open();
 
-        // Array for the colours of the LEDs
-        ledColors = new Color[ledCount];
-
-        ledColors[0] = new Color(1, 0, 0); // red
-        ledColors[1] = new Color(0, 1, 0); // green
+        // Erstelle das Array der Light Probes
+        lightProbes = lightProbeParent.GetComponentsInChildren<LightProbe>();
 
         // send data to Arduino
         StartCoroutine(SendData());
@@ -39,16 +40,7 @@ public class LedConnector : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // Change the colour of the LEDs
-        for (int i = 0; i < ledCount; i++)
-        {
-            Color temp = ledColors[i];
-            ledColors[i].r = temp.b;
-            ledColors[i].g = temp.r;
-            ledColors[i].b = temp.g;
 
-            // Debug.Log("LED " + i + " is now " + ledColors[i]);
-        }
     }
 
     // send data to Arudino at 100Hz
@@ -61,10 +53,12 @@ public class LedConnector : MonoBehaviour
 
             for (int i = 0; i < ledCount; i++)
             {
+                // Get the colour of the Light Probe
+                Color probeColor = lightProbes[i].probeColor;
                 // Convert the colour value to the RGB range 0-255
-                int r = Mathf.RoundToInt(ledColors[i].r * 255);
-                int g = Mathf.RoundToInt(ledColors[i].g * 255);
-                int b = Mathf.RoundToInt(ledColors[i].b * 255);
+                int r = Mathf.RoundToInt(probeColor.r * 255);
+                int g = Mathf.RoundToInt(probeColor.g * 255);
+                int b = Mathf.RoundToInt(probeColor.b * 255);
 
                 // Store the RGB values in the data array
                 data[i * 3] = (byte)r;
@@ -83,6 +77,24 @@ public class LedConnector : MonoBehaviour
     void OnApplicationQuit()
     {
         // Close serial connection
+        TurnLedsOff();
         serialPort.Close();
+    }
+
+    void TurnLedsOff()
+    {
+        // Create a byte array for the data to send to Arduino
+        byte[] data = new byte[ledCount * 3];
+
+        for (int i = 0; i < ledCount; i++)
+        {
+            // Store the RGB values in the data array
+            data[i * 3] = (byte)0;
+            data[i * 3 + 1] = (byte)0;
+            data[i * 3 + 2] = (byte)0;
+        }
+
+        // Send data to Arduino
+        serialPort.Write(data, 0, data.Length);
     }
 }
