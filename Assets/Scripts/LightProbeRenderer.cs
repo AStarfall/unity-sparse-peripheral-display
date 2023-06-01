@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class LightProbeRenderer : MonoBehaviour
 {
-    public LightProbe[] lightProbes; // Array der Light Probes
+    public GameObject lightProbeParent; // Referenz auf das GameObject, das alle Light Probes enthält
+    private LightProbe[] lightProbes; // Array der Light Probes
 
     public Camera renderCamera; // Referenz auf die MainCamera
     private Texture2D cameraTexture; // Textur, um das gerenderte Bild der MainCamera zu speichern
@@ -17,6 +18,9 @@ public class LightProbeRenderer : MonoBehaviour
 
         // Erstelle die Textur, um das gerenderte Bild der MainCamera zu speichern
         cameraTexture = new Texture2D(renderCamera.pixelWidth, renderCamera.pixelHeight);
+
+        // Erhalte alle Light Probes
+        GetLightProbes();
 
         // Berechne das Voronoi-Diagramm einmalig
         CalculateVoronoiDiagram();
@@ -32,6 +36,12 @@ public class LightProbeRenderer : MonoBehaviour
         // {
         //     StartCoroutine(UpdateLightProbes());
         // }
+    }
+
+    void GetLightProbes()
+    {
+        // Erhalte alle Light Probes
+        lightProbes = lightProbeParent.GetComponentsInChildren<LightProbe>();
     }
 
     void CalculateVoronoiDiagram()
