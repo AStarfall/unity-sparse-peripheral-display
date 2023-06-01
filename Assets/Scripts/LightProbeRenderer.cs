@@ -13,8 +13,10 @@ public class LightProbeRenderer : MonoBehaviour
 
     void Start()
     {
-        // Skaliere die RenderTexture der MainCamera auf 1/4 der Größe
-        renderCamera.targetTexture = new RenderTexture(renderCamera.pixelWidth / 4, renderCamera.pixelHeight / 4, 24);
+        // Skaliere die RenderTexture der MainCamera auf 1/10 der Größe
+        renderCamera.targetTexture = new RenderTexture(renderCamera.pixelWidth / 10, renderCamera.pixelHeight / 10, 24);
+
+        Debug.Log("Widht: " + renderCamera.pixelWidth + ", Height: " + renderCamera.pixelHeight);
 
         // Erstelle die Textur, um das gerenderte Bild der MainCamera zu speichern
         cameraTexture = new Texture2D(renderCamera.pixelWidth, renderCamera.pixelHeight);
@@ -30,12 +32,6 @@ public class LightProbeRenderer : MonoBehaviour
     {
         // Aktualisiere die Light Probes basierend auf dem vorberechneten Voronoi-Diagramm
         StartCoroutine(UpdateLightProbes());
-
-        // // alle 10 Frames aktualisieren
-        // if (Time.frameCount % 10 == 0)
-        // {
-        //     StartCoroutine(UpdateLightProbes());
-        // }
     }
 
     void GetLightProbes()
