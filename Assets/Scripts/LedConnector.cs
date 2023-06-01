@@ -76,8 +76,13 @@ public class LedConnector : MonoBehaviour
 
     void OnApplicationQuit()
     {
-        // Close serial connection
+        // stop sending data to Arduino
+        StopCoroutine(SendData());
+
+        // Turn off all LEDs
         TurnLedsOff();
+
+        // Close serial connection
         serialPort.Close();
     }
 
