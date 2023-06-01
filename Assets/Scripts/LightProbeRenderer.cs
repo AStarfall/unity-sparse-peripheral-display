@@ -16,13 +16,15 @@ public class LightProbeRenderer : MonoBehaviour
         // Skaliere die RenderTexture der MainCamera auf 1/10 der Größe
         renderCamera.targetTexture = new RenderTexture(renderCamera.pixelWidth / 10, renderCamera.pixelHeight / 10, 24);
 
-        Debug.Log("Widht: " + renderCamera.pixelWidth + ", Height: " + renderCamera.pixelHeight);
+        Debug.Log("Resolution for Light Probe Rendering: " + renderCamera.targetTexture.width + "x" + renderCamera.targetTexture.height + "px");
 
         // Erstelle die Textur, um das gerenderte Bild der MainCamera zu speichern
         cameraTexture = new Texture2D(renderCamera.pixelWidth, renderCamera.pixelHeight);
 
-        // Erhalte alle Light Probes
-        GetLightProbes();
+        // Erstelle das Array der Light Probes
+        lightProbes = lightProbeParent.GetComponentsInChildren<LightProbe>();
+
+        Debug.Log("Number of Light Probes: " + lightProbes.Length);
 
         // Berechne das Voronoi-Diagramm einmalig
         CalculateVoronoiDiagram();
@@ -32,12 +34,6 @@ public class LightProbeRenderer : MonoBehaviour
     {
         // Aktualisiere die Light Probes basierend auf dem vorberechneten Voronoi-Diagramm
         StartCoroutine(UpdateLightProbes());
-    }
-
-    void GetLightProbes()
-    {
-        // Erhalte alle Light Probes
-        lightProbes = lightProbeParent.GetComponentsInChildren<LightProbe>();
     }
 
     void CalculateVoronoiDiagram()
