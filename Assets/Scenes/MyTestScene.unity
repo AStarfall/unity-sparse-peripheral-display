@@ -1137,7 +1137,7 @@ Camera:
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 2147483647
+    m_Bits: 55
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -4134,7 +4134,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   portName: COM5
-  baudRate: 250000
+  baudRate: 350000
   ledCount: 48
   lightProbeParent: {fileID: 1723889000}
 --- !u!4 &1704685461
