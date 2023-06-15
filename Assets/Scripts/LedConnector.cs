@@ -9,7 +9,7 @@ public class LedConnector : MonoBehaviour
     // Public variables
     public string portName = "COM5"; // name of the serial port
     public int baudRate = 250000; // baud rate of the serial connection
-    public int ledCount = 2; // number of LEDs connected to Arduino
+    public int ledCount = 48; // number of LEDs connected to Arduino
 
     public GameObject lightProbeParent; // Referenz auf das GameObject, das alle Light Probes enthält
 
@@ -25,10 +25,20 @@ public class LedConnector : MonoBehaviour
         serialPort = new SerialPort(portName, baudRate);
         serialPort.DtrEnable = true;    // necessary for my Arduino Nano every
         serialPort.RtsEnable = true;    // necessary for my Arduino Nano every
-        serialPort.WriteBufferSize = ledCount * 3; // set the buffer size to the number of LEDs * 3, Don't know if this is necessary
+        // serialPort.WriteBufferSize = ledCount * 3; // set the buffer size to the number of LEDs * 3, Don't know if this is necessary
 
         // Open serial connection
         serialPort.Open();
+
+        // check if serial connection is open
+        if (serialPort.IsOpen)
+        {
+            Debug.Log("Serial port " + portName + " opened successfully");
+        }
+        else
+        {
+            Debug.Log("Could not open serial port " + portName);
+        }
 
         // Erstelle das Array der Light Probes
         lightProbes = lightProbeParent.GetComponentsInChildren<LightProbe>();
