@@ -1,0 +1,44 @@
+#pragma kernel CalculateAverageColors
+
+Texture2D<float4> CameraTexture;
+RWStructuredBuffer<float4> AverageColors;
+RWStructuredBuffer<int> ProbeCounts;
+
+[numthreads(8, 8, 1)]
+void CalculateAverageColors(uint3 id : SV_DispatchThreadID)
+{
+    float2 pixelPosition = float2(id.xy + 0.5);
+
+    int nearestProbeIndex = FindNearestProbeIndex(pixelPosition);
+
+    float4 pixelColor = CameraTexture.Load(int3(pixelPosition, 0));
+
+    // Increment probe count
+    InterlockedAdd(ProbeCounts[nearestProbeIndex], 1);
+
+    // Accumulate pixel color
+    InterlockedAdd(AverageColors[nearestProbeIndex], pixelColor);
+}
+
+int FindNearestProbeIndex(float2 position)
+{
+    int nearestIndex = 0;
+    float nearestDistance = 1000000.0; // Initialize with a large value
+
+    for (int i = 0; i < LightProbeCount; i++)
+    {
+        float distance = length(position - GetProbePosition(i));
+        if (distance < nearestDistance)
+        {
+            nearestIndex = i;
+            nearestDistance = distance;
+        }
+    }
+
+    return nearestIndex;
+}
+
+float2 GetProbePosition(int index)
+{
+    return float2(lightProbes[index].GetProbePosition().x, lightProbes[index].GetProbePosition().y);
+}
