@@ -17,7 +17,9 @@ public class LightProbeRenderer : MonoBehaviour
     void Start()
     {
         // Skaliere die RenderTexture der MainCamera auf 1/10 der Größe
-        renderCamera.targetTexture = new RenderTexture(renderCamera.pixelWidth / 10, renderCamera.pixelHeight / 10, 24);
+        // renderCamera.targetTexture = new RenderTexture(renderCamera.pixelWidth / 10, renderCamera.pixelHeight / 10, 24);
+        renderCamera.targetTexture = new RenderTexture(256, 144, 24);
+        renderCamera.fieldOfView = 120;
 
         Debug.Log("Resolution for Light Probe Rendering: " + renderCamera.targetTexture.width + "x" + renderCamera.targetTexture.height + "px");
 
