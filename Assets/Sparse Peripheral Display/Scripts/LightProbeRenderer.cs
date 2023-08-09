@@ -1,53 +1,62 @@
+/// <summary>
+/// This script renders a Voronoi Diagram of the Light Probes in the scene and updates their colors based on the average color of the pixels nearest to them.
+/// </summary>
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class LightProbeRenderer : MonoBehaviour
 {
-    public GameObject lightProbeParent; // Referenz auf das GameObject, das alle Light Probes enthält
-    private LightProbe[] lightProbes; // Array der Light Probes
-
+    // Public variables
+    public GameObject lightProbeParent; // Reference to the GameObject that contains all the Light Probes
+    private LightProbe[] lightProbes; // Array of Light Probes
+    public Camera renderCamera; // Reference to the camera of the Light Probe Renderer
     // public ComputeShader computeShader; // Referenz auf den ComputeShader
 
-    public Camera renderCamera; // Referenz auf die MainCamera
-    private Texture2D cameraTexture; // Textur, um das gerenderte Bild der MainCamera zu speichern
-    private int[] nearestProbeIndices; // Zuordnung der Pixel zu den Light Probes
-    int[] probeCounts; // Anzahl der Pixel, die einem Light Probe zugeordnet sind
+    // Private variables
+    private Texture2D cameraTexture; // Texture to store the rendered image of the MainCamera
+    private int[] nearestProbeIndices; // Index of the nearest Light Probe for each pixel
+    private Color[] averageColors; // Array to calculate the average color values
+    private Color[] pixels; // Array to store the pixel values of the camera texture
+    private int[] pixelsPerProbe; // Number of pixels assigned to each Light Probe
 
     void Start()
     {
-        // Skaliere die RenderTexture der MainCamera auf 1/10 der Größe
-        // renderCamera.targetTexture = new RenderTexture(renderCamera.pixelWidth / 10, renderCamera.pixelHeight / 10, 24);
+        // Setup the camera of the Light Probe Renderer
         renderCamera.targetTexture = new RenderTexture(256, 144, 24);
         renderCamera.fieldOfView = 120;
 
         Debug.Log("Resolution for Light Probe Rendering: " + renderCamera.targetTexture.width + "x" + renderCamera.targetTexture.height + "px");
 
-        // Erstelle die Textur, um das gerenderte Bild der MainCamera zu speichern
+        // Create the texture to store the rendered image of the MainCamera
         cameraTexture = new Texture2D(renderCamera.pixelWidth, renderCamera.pixelHeight);
 
-        // Erstelle das Array der Light Probes
+        // Create the array of Light Probes and get all Light Probes in the scene
         lightProbes = lightProbeParent.GetComponentsInChildren<LightProbe>();
 
-        Debug.Log("Number of Light Probes: " + lightProbes.Length);
+        Debug.Log("Number of Light Probes found: " + lightProbes.Length);
 
-        // Berechne das Voronoi-Diagramm einmalig
+        // Calculate the Voronoi Diagram once at the beginning
         CalculateVoronoiDiagram();
     }
 
     void LateUpdate()
     {
-        // Aktualisiere die Light Probes basierend auf dem vorberechneten Voronoi-Diagramm
+        // Start the coroutine to update the Light Probes
         StartCoroutine(UpdateLightProbes());
     }
 
+    /// <summary>
+    /// Calculates the Voronoi Diagram of the Light Probes.
+    /// </summary>
     void CalculateVoronoiDiagram()
     {
-        // Erstelle das Voronoi-Diagramm und berechne Durchschnittsfarbwerte
         nearestProbeIndices = new int[cameraTexture.width * cameraTexture.height];
-        Color[] averageColors = new Color[lightProbes.Length];
-        probeCounts = new int[lightProbes.Length];
+        averageColors = new Color[lightProbes.Length];
+        pixelsPerProbe = new int[lightProbes.Length];
 
+        pixels = cameraTexture.GetPixels();
+
+        // Assign each pixel to its nearest light probe.
         for (int i = 0; i < cameraTexture.width; i++)
         {
             for (int j = 0; j < cameraTexture.height; j++)
@@ -57,6 +66,7 @@ public class LightProbeRenderer : MonoBehaviour
             }
         }
 
+        // Accumulate the color of each pixel in the light probe to which it was assigned.
         for (int i = 0; i < cameraTexture.width; i++)
         {
             for (int j = 0; j < cameraTexture.height; j++)
@@ -65,140 +75,71 @@ public class LightProbeRenderer : MonoBehaviour
                 int nearestProbeIndex = nearestProbeIndices[pixelIndex];
 
                 averageColors[nearestProbeIndex] += cameraTexture.GetPixel(i, j);
-                probeCounts[nearestProbeIndex]++;
+                pixelsPerProbe[nearestProbeIndex]++;
             }
         }
 
+        // Update each light probe with the average color of all pixels assigned to it.
         for (int i = 0; i < lightProbes.Length; i++)
         {
-            if (probeCounts[i] > 0)
+            if (pixelsPerProbe[i] > 0)
             {
-                averageColors[i] /= probeCounts[i];
+                averageColors[i] /= pixelsPerProbe[i];
                 lightProbes[i].UpdateProbeColor(averageColors[i]);
             }
         }
     }
 
-    // IEnumerator UpdateLightProbes()
-    // {
-    //     yield return new WaitForEndOfFrame();
 
-    //     // Rendere das Bild der MainCamera in die Textur
-    //     RenderTexture currentRT = RenderTexture.active;
-    //     RenderTexture.active = renderCamera.targetTexture;
-    //     cameraTexture.ReadPixels(new Rect(0, 0, cameraTexture.width, cameraTexture.height), 0, 0);
-    //     cameraTexture.Apply();
-    //     RenderTexture.active = currentRT;
-
-    //     // Erstelle ComputeBuffers für nearestProbeIndices und probeCounts
-    //     ComputeBuffer nearestProbeIndicesBuffer = new ComputeBuffer(nearestProbeIndices.Length, sizeof(int));
-    //     ComputeBuffer probeCountsBuffer = new ComputeBuffer(this.probeCounts.Length, sizeof(int));
-
-    //     // Setze die Daten in die ComputeBuffers
-    //     nearestProbeIndicesBuffer.SetData(nearestProbeIndices);
-    //     probeCountsBuffer.SetData(probeCounts);
-
-    //     // Erhalte den Index des Kernels im ComputeShader
-    //     int kernelIndex = this.computeShader.FindKernel("CalculateAverageColors");
-
-    //     // Setze die ComputeBuffers im ComputeShader
-    //     computeShader.SetBuffer(kernelIndex, "nearestProbeIndices", nearestProbeIndicesBuffer);
-    //     computeShader.SetBuffer(kernelIndex, "probeCounts", probeCountsBuffer);
-
-    //     // Dispatch den ComputeShader
-    //     computeShader.Dispatch(kernelIndex, cameraTexture.width, cameraTexture.height, 1);
-
-    //     // Erhalte die aktualisierten Daten aus den ComputeBuffers
-    //     nearestProbeIndicesBuffer.GetData(nearestProbeIndices);
-    //     probeCountsBuffer.GetData(probeCounts);
-
-    //     // Gib die ComputeBuffers frei
-    //     nearestProbeIndicesBuffer.Release();
-    //     probeCountsBuffer.Release();
-
-    //     // Aktualisiere die Light Probes mit den Durchschnittsfarbwerten
-    //     Color[] averageColors = new Color[lightProbes.Length];
-
-    //     for (int i = 0; i < cameraTexture.width * cameraTexture.height; i++)
-    //     {
-    //         int nearestProbeIndex = nearestProbeIndices[i];
-
-    //         averageColors[nearestProbeIndex] += cameraTexture.GetPixel(i % cameraTexture.width, i / cameraTexture.width);
-    //     }
-
-    //     for (int i = 0; i < lightProbes.Length; i++)
-    //     {
-    //         if (probeCounts[i] > 0)
-    //         {
-    //             averageColors[i] /= probeCounts[i];
-    //             lightProbes[i].UpdateProbeColor(averageColors[i]);
-    //         }
-    //     }
-    // }
-
+    /// <summary>
+    /// Updates the Light Probes with the calculated Color values.
+    /// </summary>
+    /// <returns></returns>
     IEnumerator UpdateLightProbes()
     {
         yield return new WaitForEndOfFrame();
 
-        // Rendere das Bild der MainCamera in die Textur
+        // Get the current render texture
         RenderTexture currentRT = RenderTexture.active;
+        // Set the render texture to the one we are capturing to
         RenderTexture.active = renderCamera.targetTexture;
+
+        // Read the pixels from the render texture into the camera texture
         cameraTexture.ReadPixels(new Rect(0, 0, cameraTexture.width, cameraTexture.height), 0, 0);
         cameraTexture.Apply();
+
+        // Restore the original render texture
         RenderTexture.active = currentRT;
 
-        // Weise den Light Probes die Farben basierend auf dem Voronoi-Diagramm zu
-        Color[] averageColors = new Color[lightProbes.Length];
-        probeCounts = new int[lightProbes.Length];
+        // Create an array to store the average colors for each probe
+        averageColors = new Color[lightProbes.Length];
 
-        // Erhalte die Pixelwerte der Kameratextur
-        Color[] pixels = cameraTexture.GetPixels();
+        // Get the pixels from the camera texture
+        pixels = cameraTexture.GetPixels();
 
-        // ---- Berchnung der Durchschnittsfarbwerte in Batches ----
-        // int batchSize = 200;
-        // int numBatches = Mathf.CeilToInt((float)pixels.Length / batchSize);
-
-        // for (int batchIndex = 0; batchIndex < numBatches; batchIndex++)
-        // {
-        //     int startIndex = batchIndex * batchSize;
-        //     int endIndex = Mathf.Min(startIndex + batchSize, pixels.Length);
-
-        //     for (int i = startIndex; i < endIndex; i++)
-        //     {
-        //         int nearestProbeIndex = nearestProbeIndices[i];
-
-        //         averageColors[nearestProbeIndex] += pixels[i];
-        //         probeCounts[nearestProbeIndex]++;
-        //     }
-        // }
-        // ----
-
-
-        // ---- Berchnung der Durchschnittsfarbwerte ohne Batches ----
-        // Iteriere über die Pixel und aktualisiere die Durchschnittsfarbwerte
+        // For each pixel, add its color to the average color for the probe it is nearest to
         for (int i = 0; i < pixels.Length; i++)
         {
-            int nearestProbeIndex = nearestProbeIndices[i];
-
-            averageColors[nearestProbeIndex] += pixels[i];
-            probeCounts[nearestProbeIndex]++;
+            averageColors[nearestProbeIndices[i]] += pixels[i];
         }
-        // ----
 
-        // Debug.Log("Width: " + cameraTexture.width + ", Height: " + cameraTexture.height + ", Total Pixels:" + pixels.Length);
-
-        // Aktualisiere die Light Probes mit den Durchschnittsfarbwerten
+        // For each probe, update its color to the average color of the pixels nearest to it
         for (int i = 0; i < lightProbes.Length; i++)
         {
-            if (probeCounts[i] > 0)
+            if (pixelsPerProbe[i] > 0)
             {
-                averageColors[i] /= probeCounts[i];
+                averageColors[i] /= pixelsPerProbe[i];
                 lightProbes[i].UpdateProbeColor(averageColors[i]);
             }
         }
     }
 
 
+    /// <summary>
+    /// Finds the index of the nearest Light Probe for a given position.
+    /// </summary>
+    /// <param name="position"></param>
+    /// <returns></returns>
     int FindNearestProbeIndex(Vector2 position)
     {
         int nearestIndex = 0;

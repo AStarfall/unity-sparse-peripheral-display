@@ -1,35 +1,38 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Rendering;
 using System.IO.Ports;
 
 
+/// <summary>
+/// This class handles the communication between Unity and an Arduino board to control a set of LEDs.
+/// </summary>
 public class LedConnector : MonoBehaviour
 {
     // Public variables
     public string portName = "COM5"; // name of the serial port
-    // public int baudRate = 250000; // baud rate of the serial connection
     public int baudRate; // baud rate of the serial connection
     public int ledCount; // number of LEDs connected to Arduino
-
-    public GameObject lightProbeParent; // Referenz auf das GameObject, das alle Light Probes enthält
-
+    public GameObject lightProbeParent; // Reference to the GameObject that contains all the Light Probes
 
     // Private variables
     private SerialPort serialPort;
-    // private Color[] ledColors; // array for the colours of the LEDs
-    private LightProbe[] lightProbes; // Array der Light Probes
+    private LightProbe[] lightProbes; // Array of Light Probes
 
+    /// <summary>
+    /// Sets up the serial connection and starts sending data to the Arduino.
+    /// </summary>
     void Start()
     {
         // Setup serial connection
-        serialPort = new SerialPort(portName, baudRate);
-        serialPort.DtrEnable = true;    // necessary for my Arduino Nano every
-        serialPort.RtsEnable = true;    // necessary for my Arduino Nano every
-        serialPort.WriteBufferSize = ledCount * 3; // important to prevent flickering
+        serialPort = new SerialPort(portName, baudRate)
+        {
+            DtrEnable = true,    // necessary for my Arduino Nano every
+            RtsEnable = true,    // necessary for my Arduino Nano every
+            WriteBufferSize = ledCount * 3 // important to prevent flickering
+        };
 
         // Open serial connection
+        Debug.Log("Opening serial port: " + portName + ", Baud rate: " + baudRate);
         serialPort.Open();
 
         // check if serial connection is open
@@ -42,11 +45,11 @@ public class LedConnector : MonoBehaviour
             Debug.Log("Could not open serial port " + portName);
         }
 
-        // Erstelle das Array der Light Probes
+        // Create the array of Light Probes
         lightProbes = lightProbeParent.GetComponentsInChildren<LightProbe>();
 
         // send data to Arduino
-        StartCoroutine(SendData());
+        StartCoroutine(SendData(10));
     }
 
     // Update is called once per frame
@@ -55,8 +58,11 @@ public class LedConnector : MonoBehaviour
 
     }
 
-    // send data to Arudino at 100Hz
-    IEnumerator SendData()
+    /// <summary>
+    /// Sends data to the Arduino at a specified refresh rate.
+    /// </summary>
+    /// <param name="refreshRate">The refresh rate in Hz.</param>
+    IEnumerator SendData(int refreshRate = 100)
     {
         while (true)
         {
@@ -66,7 +72,7 @@ public class LedConnector : MonoBehaviour
             for (int i = 0; i < ledCount; i++)
             {
                 // Get the colour of the Light Probe
-                Color probeColor = lightProbes[i].probeColor;
+                Color probeColor = lightProbes[i].ProbeColor;
                 // Convert the colour value to the RGB range 0-255
                 int r = Mathf.RoundToInt(probeColor.r * 255);
                 int g = Mathf.RoundToInt(probeColor.g * 255);
@@ -81,12 +87,15 @@ public class LedConnector : MonoBehaviour
             // Send data to Arduino
             serialPort.Write(data, 0, data.Length);
 
-            // Wait for 0.01 seconds (100Hz)
-            // yield return new WaitForSeconds(0.01f);
-            yield return new WaitForSeconds(0.1f);
+            // Wait for 1/X seconds (XHz)
+            float waitTime = 1f / refreshRate;
+            yield return new WaitForSeconds(waitTime);
         }
     }
 
+    /// <summary>
+    /// Stops sending data to the Arduino, turns off all LEDs and closes the serial connection when the application is quit.
+    /// </summary>
     void OnApplicationQuit()
     {
         // stop sending data to Arduino
@@ -97,8 +106,21 @@ public class LedConnector : MonoBehaviour
 
         // Close serial connection
         serialPort.Close();
+
+        // check if serial connection is closed
+        if (serialPort.IsOpen)
+        {
+            Debug.Log("Serial port " + portName + " could not be closed");
+        }
+        else
+        {
+            Debug.Log("Serial port " + portName + " closed successfully");
+        }
     }
 
+    /// <summary>
+    /// Turns off all LEDs by sending a byte array of zeros to the Arduino.
+    /// </summary>
     void TurnLedsOff()
     {
         // Create a byte array for the data to send to Arduino
@@ -114,8 +136,5 @@ public class LedConnector : MonoBehaviour
 
         // Send data to Arduino
         serialPort.Write(data, 0, data.Length);
-
-        // Log Connection closed
-        Debug.Log("Serial port " + portName + " closed");
     }
 }
