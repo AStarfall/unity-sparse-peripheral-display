@@ -2730,7 +2730,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 6872798956377669073, guid: 3f942c90081d5294d8038bbf0c37f970, type: 3}
       propertyPath: m_Name
-      value: LightProbeKnot -new
+      value: LightProbeKnot
       objectReference: {fileID: 0}
     - target: {fileID: 6872798956377669074, guid: 3f942c90081d5294d8038bbf0c37f970, type: 3}
       propertyPath: m_RootOrder
