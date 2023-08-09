@@ -71,10 +71,16 @@ public class LightProbeRenderer : MonoBehaviour
         {
             for (int j = 0; j < cameraTexture.height; j++)
             {
+                // calculate the index of the pixel in the array
                 int pixelIndex = j * cameraTexture.width + i;
+
+                // get the index of the nearest light probe for the pixel
                 int nearestProbeIndex = nearestProbeIndices[pixelIndex];
 
+                // add the color of the pixel to the average color of the light probe
                 averageColors[nearestProbeIndex] += cameraTexture.GetPixel(i, j);
+
+                // increment the number of pixels assigned to the light probe
                 pixelsPerProbe[nearestProbeIndex]++;
             }
         }
