@@ -53,11 +53,10 @@ public class LedConnector : MonoBehaviour
         // Check if serial connection is open
         if (serialPort.IsOpen)
         {
-            Debug.Log("Serial port " + portName + " opened successfully");
+            Debug.Log("Serial port " + portName + " opened successfully, start sending data to Arduino...");
             // Start sending data to Arduino
             StartCoroutine(SendData(10));
         }
-
     }
 
     // Update is called once per frame
@@ -152,7 +151,7 @@ public class LedConnector : MonoBehaviour
         catch (Exception e)
         {
             // Catch any exceptions that may occur when writing to Arduino
-            Debug.LogError(e);
+            Debug.LogError(e.Message);
         }
     }
 }
