@@ -27,6 +27,8 @@ The **Unity Sparse Peripheral Display** project explores a novel approach to enh
 
 ## Installation
 
+### Clone the entire Unity Project
+
 1. Clone this repository to your local machine using:
 
    ```
@@ -51,15 +53,20 @@ Please note that the Unity package includes all the necessary assets, scripts, a
 
 ## Usage
 
+### Using the Unity Project
+
 To integrate the sparse peripheral display concept into your Unity VR project, follow these steps:
 
 1. Import the necessary assets from the **Unity Sparse Peripheral Display** project.
-2. Study the demo scene to understand LED positioning and control.
-3. Customize LED configurations to match your VR headset and desired FoV expansion.
+2. In your existing project click on **Edit** > **Project Settings...** > **Player** > **Other Settings**
+3. Change **Api Compatibility Level** to **.NET Framework**
+4. Study the demo scene to understand LED positioning and control.
+5. Attach the LightProbeKnot to the head of your player
+6. Customize LED configurations to match your VR headset and desired FoV expansion.
 
 ### Using the Custom Unity Package
 
-To make the integration of the **Unity Sparse Peripheral Display** assets even simpler, we have provided a custom Unity package that bundles all the required assets.
+To make the integration of the **Unity Sparse Peripheral Display** assets in your existing Unity VR project, we have provided a custom Unity package that bundles all the required assets.
 
 To use this package, follow these steps:
 
@@ -68,6 +75,9 @@ To use this package, follow these steps:
 3. Choose **Import Package > Custom Package**.
 4. Select the downloaded `unity-sparse-peripheral-display.unitypackage` file.
 5. Follow the prompts to complete the import process.
+6. Click on **Edit** > **Project Settings...** > **Player** > **Other Settings**
+7. Change **Api Compatibility Level** to **.NET Framework**
+8. Attach the LightProbeKnot to the head of your player
 
 The Unity package encompasses everything needed for a smooth integration of the sparse peripheral display concept into your VR project.
 
