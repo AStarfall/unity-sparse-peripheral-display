@@ -10,7 +10,7 @@ public class LightProbeRenderer : MonoBehaviour
     public GameObject lightProbeParent; // Reference to the GameObject that contains all the Light Probes
     private LightProbe[] lightProbes; // Array of Light Probes
     public Camera renderCamera; // Reference to the camera of the Light Probe Renderer
-    // public ComputeShader computeShader; // Referenz auf den ComputeShader
+    // public ComputeShader computeShader; // Reference to the compute shader that calculates the Voronoi Diagram
 
     // Private variables
     private Texture2D cameraTexture; // Texture to store the rendered image of the MainCamera
