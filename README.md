@@ -10,7 +10,6 @@ Welcome to the **Unity Sparse Peripheral Display** repository! This Unity projec
 - [Features](#features)
 - [Installation](#installation)
 - [Usage](#usage)
-- [Classes](#classes)
 - [Contributing](#contributing)
 - [License](#license)
 - [Contact](#contact)
@@ -38,9 +37,9 @@ The **Unity Sparse Peripheral Display** project explores a novel approach to enh
 
 ### Custom Unity Package
 
-For your convenience, we have prepared a custom Unity package containing all the necessary assets for the **Unity Sparse Peripheral Display** project.
+For your convenience, I have prepared a custom Unity package containing all the necessary assets for the **Unity Sparse Peripheral Display** project.
 
-You can download the package from the [Releases](https://github.com/your-username/unity-sparse-peripheral-display/releases) section. To import the package into your Unity project, follow these steps:
+You can download the package from the [Releases](https://github.com/marius7600/unity-sparse-peripheral-display/releases) section. To import the package into your Unity project, follow these steps:
 
 1. Download the latest release package (`unity-sparse-peripheral-display.unitypackage`).
 2. In your Unity project, open the Assets menu.
@@ -64,7 +63,7 @@ To make the integration of the **Unity Sparse Peripheral Display** assets even s
 
 To use this package, follow these steps:
 
-1. Download the latest release package (`unity-sparse-peripheral-display.unitypackage`) from the [Releases](https://github.com/your-username/unity-sparse-peripheral-display/releases) section.
+1. Download the latest release package (`unity-sparse-peripheral-display.unitypackage`) from the [Releases](https://github.com/marius7600/unity-sparse-peripheral-display/releases) section.
 2. In your Unity project, navigate to the Assets menu.
 3. Choose **Import Package > Custom Package**.
 4. Select the downloaded `unity-sparse-peripheral-display.unitypackage` file.
