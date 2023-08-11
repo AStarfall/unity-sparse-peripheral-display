@@ -1,6 +1,7 @@
 # Unity Sparse Peripheral Display
 
-![unity-sparse-peripheral-display](https://github.com/marius7600/unity-sparse-peripheral-display/assets/56048471/018b8d94-a8be-4119-980c-72198f8a95c8)
+![unity-sparse-peripheral-display-banner-kein-text](https://github.com/marius7600/unity-sparse-peripheral-display/assets/56048471/ba9a7693-6d8c-46ef-b5e3-b710f532049e)
+
 
 
 Welcome to the **Unity Sparse Peripheral Display** repository! This Unity project aims to expand the field of view (FoV) in virtual reality using strategically placed LEDs within a VR headset.
