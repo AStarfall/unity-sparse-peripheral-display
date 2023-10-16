@@ -4,7 +4,7 @@
 
 
 
-Welcome to the **Unity Sparse Peripheral Display** repository! This Unity project aims to expand the field of view (FoV) in virtual reality using strategically placed LEDs within a VR headset.
+Welcome to the **Unity Sparse Peripheral Display** repository! This Unity project aims to expand the field of view (FoV) in virtual reality using strategically placed LEDs within a VR headset. The Arudino code for receiving the colour values and controlling the LEDs is provided in the [**Arduino Sparse Peripheral Display**](https://github.com/marius7600/arduino-sparse-peripheral-display) repository.
 
 ## Table of Contents
 
